@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actionCreators from '../store/actions/index';
 
 class AddRecipie extends Component {
 
-	state = {
-		name: '',
-		ingredients: null
-	}
-
 	onSubmit = (event) => {
 		event.preventDefault()
-		
-		let ings = this.refs.ingredients.value.split(',');
 
-		this.setState({ name: this.refs.name.value, ingredients: ings })
-		console.log(this.state)
-	}	
+		let ings = this.refs.ingredients.value.split(',')
+
+		this.props.onAdd(this.refs.name.value, ings)
+
+		
+		this.refs.name.value = ''
+		this.refs.ingredients.value = ''
+	}
 
 	render () {
 		return (
@@ -49,4 +49,17 @@ class AddRecipie extends Component {
 	}
 };
 
-export default AddRecipie;
+const mapStateToProps = (state) => {
+	return {
+		name: state.name,
+		ingredients: state.ingredients
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		onAdd: (name, ings) => dispatch(actionCreators.add(name,ings))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddRecipie);
